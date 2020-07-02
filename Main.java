@@ -1,81 +1,80 @@
 package tictactoe;
 
-import java.util.Scanner;
+import java.util.*;
+
+import static java.lang.Integer.parseInt;
 
 public class Main {
-    final static Scanner scanner = new Scanner(System.in); // Do not change this line
-    static char[] ch;
-    static char winner = 0;
-    static int countX = 0, countO = 0;
+    final static Scanner scanner = new Scanner(System.in);
+    static char[][] gameArray = new char[3][3];
+    static char previousMove;
+    static int column = 0, line = 0;
 
     public static void main(String[] args) {
         enterCells();
-        printBoard();
-        checkStatus();
-        result();
+        firstMove();
     }
 
     public static void enterCells() {
-        System.out.println("Enter cells: ");
-        String pattern = scanner.nextLine();
+        String pattern;
+        char[] cellsCode;
 
-        ch = pattern.toCharArray();
-    }
+        do {
+            System.out.print("Enter cells: ");
+            pattern = scanner.nextLine();
+            cellsCode = pattern.toCharArray();
+        } while (cellsCode.length != 9);
 
-    static void printBoard() {
-        System.out.println("---------");
-        System.out.println("| " + ch[0] + " " + ch[1] + " " + ch[2] + " |");
-        System.out.println("| " + ch[3] + " " + ch[4] + " " + ch[5] + " |");
-        System.out.println("| " + ch[6] + " " + ch[7] + " " + ch[8] + " |");
-        System.out.println("---------");
-    }
+        int k = 0;
 
-    static void checkStatus() {
-        if ((ch[0] == 'X' && ch[1] == 'X' && ch[2] == 'X') || (ch[3] == 'X' && ch[4] == 'X' && ch[5] == 'X') || (ch[6] == 'X' && ch[7] == 'X' && ch[8] == 'X') || (ch[0] == 'X' && ch[3] == 'X' && ch[6] == 'X') || (ch[1] == 'X' && ch[4] == 'X' && ch[7] == 'X') || (ch[2] == 'X' && ch[5] == 'X' && ch[8] == 'X') || (ch[0] == 'X' && ch[4] == 'X' && ch[8] == 'X') || (ch[2] == 'X' && ch[4] == 'X' && ch[6] == 'X')) {
-            winner += 1;
+        for (int i = gameArray.length - 1; i >= 0; i--) {
+            for (int j = 0; j < gameArray.length; j++) {
+                cellsCode[k] = cellsCode[k] == '_' ? cellsCode[k] = ' ' : cellsCode[k];
+                gameArray[j][i] = cellsCode[k];
+                k++;
+            }
         }
 
-        if ((ch[0] == 'O' && ch[1] == 'O' && ch[2] == 'O') || (ch[3] == 'O' && ch[4] == 'O' && ch[5] == 'O') || (ch[6] == 'O' && ch[7] == 'O' && ch[8] == 'O') || (ch[0] == 'O' && ch[3] == 'O' && ch[6] == 'O') || (ch[1] == 'O' && ch[4] == 'O' && ch[7] == 'O') || (ch[2] == 'O' && ch[5] == 'O' && ch[8] == 'O') || (ch[0] == 'O' && ch[4] == 'O' && ch[8] == 'O') || (ch[2] == 'O' && ch[4] == 'O' && ch[6] == 'O')) {
-            winner += 2;
-        }
+        displayTable();
+    }
 
-        if (winner == 0) {
-            for (int i = 0; i < ch.length; i++) {
-                if (ch[i] == '_') {
-                    winner = 4;
+    public static void firstMove() {
+        String fCell, sCell;
+        do {
+            System.out.print("Enter the coordinates: ");
+            fCell = scanner.next();
+            sCell = scanner.next();
+
+            if (fCell.matches("\\d") && sCell.matches("\\d")) {
+                column = parseInt(fCell) - 1;
+                line = parseInt(sCell) - 1;
+
+                if ((column < 3 && column >= 0) && (line < 3 && line >= 0)) {
+                    if (gameArray[column][line] == ' ') {
+                        previousMove = ' ';
+                        gameArray[column][line] = 'X';
+                        displayTable();
+                    }
+                    else {
+                        System.out.println("This cell is occupied! Choose another one!");
+                        previousMove = 'X';
+                    }
+                }
+                else {
+                    System.out.println("Coordinates should be from 1 to 3!");
                 }
             }
-        }
-
-        for (int i = 0; i < ch.length; i++) {
-            if(ch[i] == 'X') {
-                countX += 1;
+            else {
+                System.out.println("You should enter numbers!");
             }
-            else if (ch[i] == 'O') {
-                countO += 1;
-            }
-        }
-
-        if (countX != countO && countX - 1 != countO && countX != countO - 1) {
-            winner = 3;
-        }
+        } while (previousMove != ' ');
     }
 
-    static void result() {
-        if (winner == 0) {
-            System.out.println("Draw");
-        }
-        else if (winner == 1) {
-            System.out.println("X wins");
-        }
-        else if (winner == 2) {
-            System.out.println("O wins");
-        }
-        else if (winner == 3) {
-            System.out.println("Impossible");
-        }
-        else if (winner == 4) {
-            System.out.println("Game not finished");
-        }
+    public static void displayTable() {
+        System.out.println("---------");
+        System.out.println("| " + gameArray[0][2] + " " + gameArray[1][2] + " " + gameArray[2][2] + " |");
+        System.out.println("| " + gameArray[0][1] + " " + gameArray[1][1] + " " + gameArray[2][1] + " |");
+        System.out.println("| " + gameArray[0][0] + " " + gameArray[1][0] + " " + gameArray[2][0] + " |");
+        System.out.println("---------");
     }
 }
