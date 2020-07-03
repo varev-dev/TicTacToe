@@ -7,39 +7,23 @@ import static java.lang.Integer.parseInt;
 public class Main {
     final static Scanner scanner = new Scanner(System.in);
     static char[][] gameArray = new char[3][3];
-    static char previousMove;
+    static char winner = ' ';
     static int column = 0, line = 0;
 
     public static void main(String[] args) {
-        enterCells();
-        firstMove();
-    }
-
-    public static void enterCells() {
-        String pattern;
-        char[] cellsCode;
-
-        do {
-            System.out.print("Enter cells: ");
-            pattern = scanner.nextLine();
-            cellsCode = pattern.toCharArray();
-        } while (cellsCode.length != 9);
-
-        int k = 0;
-
-        for (int i = gameArray.length - 1; i >= 0; i--) {
+        for (int i = 0; i < gameArray.length; i++) {
             for (int j = 0; j < gameArray.length; j++) {
-                cellsCode[k] = cellsCode[k] == '_' ? cellsCode[k] = ' ' : cellsCode[k];
-                gameArray[j][i] = cellsCode[k];
-                k++;
+                gameArray[i][j] = ' ';
             }
         }
-
         displayTable();
+        move();
     }
 
-    public static void firstMove() {
+    public static void move() {
         String fCell, sCell;
+        int countX = 0, countO = 0;
+
         do {
             System.out.print("Enter the coordinates: ");
             fCell = scanner.next();
@@ -51,13 +35,22 @@ public class Main {
 
                 if ((column < 3 && column >= 0) && (line < 3 && line >= 0)) {
                     if (gameArray[column][line] == ' ') {
-                        previousMove = ' ';
-                        gameArray[column][line] = 'X';
-                        displayTable();
+                        if (countX == countO) {
+                            gameArray[column][line] = 'X';
+                            countX++;
+                            displayTable();
+                            checkStatusX();
+                            checkDraw();
+                        }
+                        else {
+                            gameArray[column][line] = 'O';
+                            countO++;
+                            displayTable();
+                            checkStatusO();
+                        }
                     }
                     else {
                         System.out.println("This cell is occupied! Choose another one!");
-                        previousMove = 'X';
                     }
                 }
                 else {
@@ -67,7 +60,72 @@ public class Main {
             else {
                 System.out.println("You should enter numbers!");
             }
-        } while (previousMove != ' ');
+        } while (winner == ' ');
+    }
+
+    public static void checkStatusX() {
+        if (gameArray[0][2] == 'X' && gameArray[1][2] == 'X' && gameArray[2][2] == 'X') {
+            winner = 'X';
+        } else if (gameArray[0][1] == 'X' && gameArray[1][1] == 'X' && gameArray[2][1] == 'X') {
+            winner = 'X';
+        } else if (gameArray[0][0] == 'X' && gameArray[1][0] == 'X' && gameArray[2][0] == 'X') {
+            winner = 'X';
+        } else if (gameArray[0][2] == 'X' && gameArray[0][1] == 'X' && gameArray[0][0] == 'X') {
+            winner = 'X';
+        } else if (gameArray[1][2] == 'X' && gameArray[1][1] == 'X' && gameArray[1][0] == 'X') {
+            winner = 'X';
+        } else if (gameArray[2][2] == 'X' && gameArray[2][1] == 'X' && gameArray[2][0] == 'X') {
+            winner = 'X';
+        } else if (gameArray[0][2] == 'X' && gameArray[1][1] == 'X' && gameArray[2][0] == 'X') {
+            winner = 'X';
+        } else if (gameArray[0][0] == 'X' && gameArray[1][1] == 'X' && gameArray[2][2] == 'X') {
+            winner = 'X';
+        }
+
+        if (winner == 'X') {
+            System.out.println("X wins");
+        }
+    }
+
+    public static void checkStatusO() {
+        if (gameArray[0][2] == 'O' && gameArray[1][2] == 'O' && gameArray[2][2] == 'O') {
+            winner = 'O';
+        } else if (gameArray[0][1] == 'O' && gameArray[1][1] == 'O' && gameArray[2][1] == 'O') {
+            winner = 'O';
+        } else if (gameArray[0][0] == 'O' && gameArray[1][0] == 'O' && gameArray[2][0] == 'O') {
+            winner = 'O';
+        } else if (gameArray[0][2] == 'O' && gameArray[0][1] == 'O' && gameArray[0][0] == 'O') {
+            winner = 'O';
+        } else if (gameArray[1][2] == 'O' && gameArray[1][1] == 'O' && gameArray[1][0] == 'O') {
+            winner = 'O';
+        } else if (gameArray[2][2] == 'O' && gameArray[2][1] == 'O' && gameArray[2][0] == 'O') {
+            winner = 'O';
+        } else if (gameArray[0][2] == 'O' && gameArray[1][1] == 'O' && gameArray[2][0] == 'O') {
+            winner = 'O';
+        } else if (gameArray[0][0] == 'O' && gameArray[1][1] == 'O' && gameArray[2][2] == 'O') {
+            winner = 'O';
+        }
+
+        if (winner == 'O') {
+            System.out.println("O wins");
+        }
+    }
+
+    public static void checkDraw() {
+        int occupied = 0;
+
+        for (int i = 0; i < gameArray.length; i++) {
+            for (int j = 0; j < gameArray.length; j++) {
+                if (gameArray[i][j] != ' ') {
+                    occupied++;
+                }
+            }
+        }
+
+        if (occupied == 9 && winner == ' ') {
+            System.out.println("Draw");
+            winner = 'F';
+        }
     }
 
     public static void displayTable() {
